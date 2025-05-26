@@ -1,3 +1,4 @@
+import 'react-native-url-polyfill/auto'
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Platform, FlatList } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -55,15 +56,17 @@ export default function HomeScreen() {
         <View style={styles.header}>
           <Text style={[
             styles.headerTitle,
-            { color: isDark ? Colors.light.text : Colors.dark.text }
+            { color: isDark ? Colors.light.background : Colors.light.text }
           ]}>
             {filteredNotes.length} Notes
           </Text>
           <Button
             title="New Note"
+            style={{} }
             leftIcon={<Plus size={18} color="#fff" />}
             size="small"
             onPress={navigateToRecording}
+            titleStyle={{ color: Colors.light.background }}
           />
         </View>
 

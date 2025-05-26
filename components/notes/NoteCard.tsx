@@ -60,12 +60,13 @@ export default function NoteCard({ note, onPress, onOptionsPress }: NoteCardProp
         <Text 
           style={[
             styles.nativeText,
-            isDark ? styles.nativeTextDark : null,
+            isDark ? styles.nativeTextDark : { backgroundColor: Colors.light.background },
           ]}
           numberOfLines={2}
         >
           {note.content}
         </Text>
+
         
         <Text 
           style={[

@@ -7,6 +7,9 @@ import {
   ActivityIndicator,
   TouchableOpacityProps,
   Platform,
+  ColorValue,
+  StyleProp,
+  TextStyle,
 } from 'react-native';
 import Colors from '@/constants/Colors';
 import { typography, sizes, spacing } from '@/constants/Theme';
@@ -15,6 +18,7 @@ import useTheme from '@/hooks/useThemeContext';
 interface ButtonProps extends TouchableOpacityProps {
   title: string;
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+  titleStyle?: StyleProp<TextStyle>;
   size?: 'small' | 'medium' | 'large';
   isLoading?: boolean;
   leftIcon?: React.ReactNode;
@@ -24,6 +28,7 @@ interface ButtonProps extends TouchableOpacityProps {
 export default function Button({
   title,
   variant = 'primary',
+  titleStyle,
   size = 'medium',
   isLoading = false,
   leftIcon,
@@ -131,7 +136,7 @@ export default function Button({
         ) : (
           <>
             {leftIcon && <View style={styles.iconLeft}>{leftIcon}</View>}
-            <Text style={getTextStyle()}>{title}</Text>
+            <Text style={[getTextStyle(), titleStyle]}>{title}</Text>
             {rightIcon && <View style={styles.iconRight}>{rightIcon}</View>}
           </>
         )}

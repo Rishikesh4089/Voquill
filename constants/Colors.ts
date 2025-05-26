@@ -100,9 +100,9 @@ export const Colors = {
     notification: '#FF5252',
   },
   dark: {
-    background: '#121212',
-    card: '#1E1E1E',
-    text: '#F9F9F9',
+    background: '#666666',
+    card: '#474747',
+    text: '#000000',
     border: '#2A2A2A',
     notification: '#FF5252',
   },

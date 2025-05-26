@@ -1,144 +1,135 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { AuthContextType, User } from '../types';
+// hooks/useAuth.tsx
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { supabase } from '@/utils/supabase';
+import { User } from '@supabase/supabase-js';
 import { useRouter, useSegments } from 'expo-router';
 
-// Create an authentication context
+type AuthContextType = {
+  user: User | null;
+  displayName: string | null;
+  isLoading: boolean;
+  isAuthenticated: boolean;
+  login: (email: string, password: string) => Promise<void>;
+  signup: (email: string, password: string, name?: string) => Promise<void>;
+  logout: () => Promise<void>;
+};
+
 const AuthContext = createContext<AuthContextType>({
   user: null,
+  displayName: null,
   isLoading: true,
   isAuthenticated: false,
   login: async () => {},
-  logout: async () => {},
   signup: async () => {},
+  logout: async () => {},
 });
-
-// Mock user data for demo
-const MOCK_USER: User = {
-  id: '1',
-  email: 'user@example.com',
-  name: 'Demo User',
-  avatar: 'https://i.pravatar.cc/150?img=1',
-};
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [displayName, setDisplayName] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
-  const segments = useSegments();
+  // const router = useRouter();
+  // const segments = useSegments();
+  // const [hasMounted, setHasMounted] = useState(false);
 
-  // Check if the user is authenticated
   const isAuthenticated = !!user;
 
-  // Effect for handling route protection
-  useEffect(() => {
-    if (!isLoading) {
-      const inAuthGroup = segments[0] === '(auth)';
-      
-      if (!isAuthenticated && !inAuthGroup) {
-        // Redirect to the login page if not authenticated
-        router.replace('/(auth)/login');
-      } else if (isAuthenticated && inAuthGroup) {
-        // Redirect to the home page if authenticated
-        router.replace('/(tabs)');
-      }
+  // Helper to load display name from `profiles` table
+  const loadDisplayName = async (user: User | null) => {
+    if (!user) {
+      setDisplayName(null);
+      return;
     }
-  }, [isAuthenticated, segments, isLoading]);
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('name')
+      .eq('id', user.id)
+      .maybeSingle();
+    if (error && error.code !== 'PGRST116') {
+      console.error('Failed to fetch display name:', error.message);
+    }
+    setDisplayName(data?.name ?? null);
+  };
 
-  // Check for existing session on app start
+  // Checking if user has previously logged in
   useEffect(() => {
-    // Simulate checking for existing session
-    const checkSession = async () => {
-      try {
-        // In a real app, check for valid session in AsyncStorage or elsewhere
-        const hasSession = false; // Would be determined by checking storage
-        
-        if (hasSession) {
-          // Simulate fetching user data
-          setUser(MOCK_USER);
-        }
-      } catch (error) {
-        console.error('Failed to check session:', error);
-      } finally {
-        setIsLoading(false);
-      }
+    const getUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user ?? null);
+      loadDisplayName(session?.user ?? null);
+      setIsLoading(false);  
     };
 
-    checkSession();
+    getUser();
   }, []);
 
-  // Login function
+  // login function
   const login = async (email: string, password: string) => {
     setIsLoading(true);
-    
-    try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // In a real app, make an API call to authenticate
-      if (email && password) {
-        setUser(MOCK_USER);
-      } else {
-        throw new Error('Invalid credentials');
-      }
-    } catch (error) {
-      console.error('Login failed:', error);
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
+    const { data: signInData, error } = await supabase.auth.signInWithPassword({ email, password });
+    const { user } = signInData;
+    if (error) 
+      {
+        throw error
+      }else{
+        setIsLoading(false);
+      };
+    setUser(user);
+    await loadDisplayName(user);
   };
 
-  // Logout function
+  // signup function
+  const signup = async (email: string, password: string, name?: string) => {
+    const { error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+    if (signUpError) throw signUpError;
+    const { data: signInData, error: signInError } =
+      await supabase.auth.signInWithPassword({ email, password });
+    if (signInError) throw signInError;
+    const { user } = signInData;
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .upsert(
+        { id: user.id, email: user.email, name },
+        { onConflict: 'id' }
+      );
+    if (profileError) throw profileError;
+    setUser(user);
+    await loadDisplayName(user);
+    setIsLoading(false);
+  };
+
+  // logout function
   const logout = async () => {
     setIsLoading(true);
-    
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // In a real app, make an API call to logout
       setUser(null);
-    } catch (error) {
-      console.error('Logout failed:', error);
+      setDisplayName(null);
+      await supabase.auth.signOut();
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Signup function
-  const signup = async (email: string, password: string, name: string) => {
-    setIsLoading(true);
-    
-    try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // In a real app, make an API call to create a new account
-      if (email && password && name) {
-        setUser({
-          ...MOCK_USER,
-          email,
-          name,
-        });
-      } else {
-        throw new Error('Invalid signup information');
-      }
-    } catch (error) {
-      console.error('Signup failed:', error);
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+  // return value for AuthContext
   return (
-    <AuthContext.Provider value={{ user, isLoading, isAuthenticated, login, logout, signup }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        displayName,
+        isLoading,
+        isAuthenticated,
+        login,
+        signup,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
-// Custom hook to use the auth context
 export const useAuth = () => useContext(AuthContext);
-
 export default useAuth;

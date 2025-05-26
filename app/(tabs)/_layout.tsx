@@ -1,9 +1,10 @@
 import React from 'react';
-import { Tabs } from 'expo-router';
+import { Redirect, Tabs } from 'expo-router';
 import { Platform } from 'react-native';
 import { Home, Mic, Settings } from 'lucide-react-native';
 import Colors from '@/constants/Colors';
 import useTheme from '@/hooks/useThemeContext';
+import useAuth from '@/hooks/useAuth';
 
 export default function TabLayout() {
   const { theme } = useTheme();
@@ -13,7 +14,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors.primary[500],
-        tabBarInactiveTintColor: isDark ? Colors.gray[500] : Colors.gray[400],
+        tabBarInactiveTintColor: isDark ? Colors.light.background : Colors.gray[400],
         tabBarStyle: {
           backgroundColor: isDark ? Colors.dark.background : Colors.light.background,
           borderTopColor: isDark ? Colors.gray[800] : Colors.gray[200],
@@ -48,6 +49,14 @@ export default function TabLayout() {
         options={{
           title: 'Settings',
           tabBarIcon: ({ color, size }) => <Settings size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          href: null, 
+          headerShown: false,
         }}
       />
     </Tabs>

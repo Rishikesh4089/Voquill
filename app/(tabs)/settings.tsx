@@ -76,7 +76,7 @@ export default function SettingsScreen() {
               />
               <Text style={[
                 styles.settingText,
-                { color: isDark ? Colors.light.text : Colors.dark.text }
+                { color: isDark ? Colors.light.background : Colors.dark.text }
               ]}>
                 Dark Mode
               </Text>
@@ -111,7 +111,7 @@ export default function SettingsScreen() {
               />
               <Text style={[
                 styles.settingText,
-                { color: isDark ? Colors.light.text : Colors.dark.text }
+                { color: isDark ? Colors.light.background : Colors.dark.text }
               ]}>
                 Default Language
               </Text>
@@ -141,7 +141,7 @@ export default function SettingsScreen() {
               />
               <Text style={[
                 styles.settingText,
-                { color: isDark ? Colors.light.text : Colors.dark.text }
+                { color: isDark ? Colors.light.background : Colors.dark.text }
               ]}>
                 Push Notifications
               </Text>
@@ -186,6 +186,7 @@ export default function SettingsScreen() {
             </Text>
             <Button
               title="Delete Account"
+              titleStyle={{ color: isDark ? Colors.light.background : Colors.gray[100]}}
               variant="danger"
               onPress={handleDeleteAccount}
               isLoading={isDeleting}

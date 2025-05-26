@@ -28,22 +28,21 @@ export default function LoginScreen() {
   const isDark = theme === 'dark';
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      setError('Please enter both email and password');
-      return;
-    }
+  if (!email || !password) {
+    setError('Please enter both email and password');
+    return;
+  }
+  try {
+    setIsLoading(true);
+    setError(null);
+    await login(email, password); // wait for auth state to set
+    router.replace('/(tabs)');
+  } catch (err) {
+    setError('Invalid email or password');
+  } 
+  // setIsLoading(false);
+};
 
-    try {
-      setError(null);
-      setIsLoading(true);
-      await login(email, password);
-      router.replace('/(tabs)');
-    } catch (err) {
-      setError('Invalid email or password');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const navigateToSignup = () => {
     router.push('/signup');
@@ -64,13 +63,13 @@ export default function LoginScreen() {
         <View style={styles.formContainer}>
           <Text style={[
             styles.title,
-            { color: isDark ? Colors.light.text : Colors.dark.text }
+            { color: isDark ? Colors.light.background : Colors.dark.text }
           ]}>
             Welcome Back
           </Text>
           <Text style={[
             styles.subtitle,
-            { color: isDark ? Colors.gray[400] : Colors.gray[600] }
+            { color: isDark ? Colors.gray[300] : Colors.gray[600] }
           ]}>
             Sign in to continue recording and managing your notes
           </Text>
@@ -84,7 +83,8 @@ export default function LoginScreen() {
           <Input
             label="Email"
             placeholder="your@email.com"
-            leftIcon={<Mail size={20} color={isDark ? Colors.gray[400] : Colors.gray[500]} />}
+            placeholderTextColor={Colors.gray[200]}
+            leftIcon={<Mail size={20} color={isDark ? Colors.primary[300] : Colors.gray[500]} />}
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
@@ -94,7 +94,8 @@ export default function LoginScreen() {
           <Input
             label="Password"
             placeholder="••••••••"
-            leftIcon={<Lock size={20} color={isDark ? Colors.gray[400] : Colors.gray[500]} />}
+            placeholderTextColor={Colors.gray[200]}
+            leftIcon={<Lock size={20} color={isDark ? Colors.primary[300] : Colors.gray[500]} />}
             value={password}
             onChangeText={setPassword}
             isPassword
@@ -110,22 +111,22 @@ export default function LoginScreen() {
           <View style={styles.divider}>
             <View style={[
               styles.dividerLine,
-              { backgroundColor: isDark ? Colors.gray[700] : Colors.gray[300] }
+              { backgroundColor: isDark ? Colors.gray[900] : Colors.gray[300] }
             ]} />
             <Text style={[
               styles.dividerText,
-              { color: isDark ? Colors.gray[500] : Colors.gray[500] }
+              { color: isDark ? Colors.gray[400] : Colors.gray[500] }
             ]}>OR</Text>
             <View style={[
               styles.dividerLine,
-              { backgroundColor: isDark ? Colors.gray[700] : Colors.gray[300] }
+              { backgroundColor: isDark ? Colors.gray[900] : Colors.gray[300] }
             ]} />
           </View>
 
           <View style={styles.signupContainer}>
             <Text style={[
               styles.signupText,
-              { color: isDark ? Colors.gray[400] : Colors.gray[600] }
+              { color: isDark ? Colors.gray[200] : Colors.gray[600] }
             ]}>
               Don't have an account?
             </Text>
@@ -154,9 +155,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   title: {
-    fontSize: typography.fontSizes.xxl,
+    fontSize: typography.fontSizes.xxxl,
     fontWeight: '600',
-    marginBottom: spacing.sm,
+    marginBottom: spacing.lg,
   },
   subtitle: {
     fontSize: typography.fontSizes.md,
@@ -174,6 +175,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     marginTop: spacing.md,
+    color: Colors.light.text,
   },
   divider: {
     flexDirection: 'row',

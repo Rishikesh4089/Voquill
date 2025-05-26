@@ -71,13 +71,13 @@ export default function SignupScreen() {
         <View style={styles.formContainer}>
           <Text style={[
             styles.title,
-            { color: isDark ? Colors.light.text : Colors.dark.text }
+            { color: isDark ? Colors.light.background : Colors.dark.text }
           ]}>
             Create Account
           </Text>
           <Text style={[
             styles.subtitle,
-            { color: isDark ? Colors.gray[400] : Colors.gray[600] }
+            { color: isDark ? Colors.gray[300] : Colors.gray[600] }
           ]}>
             Sign up to start using Voquill
           </Text>
@@ -91,7 +91,8 @@ export default function SignupScreen() {
           <Input
             label="Name"
             placeholder="Your Name"
-            leftIcon={<User size={20} color={isDark ? Colors.gray[400] : Colors.gray[500]} />}
+            placeholderTextColor={Colors.gray[200]}
+            leftIcon={<User size={20} color={isDark ? Colors.primary[300] : Colors.gray[500]} />}
             value={name}
             onChangeText={setName}
           />
@@ -99,7 +100,8 @@ export default function SignupScreen() {
           <Input
             label="Email"
             placeholder="your@email.com"
-            leftIcon={<Mail size={20} color={isDark ? Colors.gray[400] : Colors.gray[500]} />}
+            placeholderTextColor={Colors.gray[200]}
+            leftIcon={<Mail size={20} color={isDark ? Colors.primary[300] : Colors.gray[500]} />}
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
@@ -109,7 +111,8 @@ export default function SignupScreen() {
           <Input
             label="Password"
             placeholder="••••••••"
-            leftIcon={<Lock size={20} color={isDark ? Colors.gray[400] : Colors.gray[500]} />}
+            placeholderTextColor={Colors.gray[200]}
+            leftIcon={<Lock size={20} color={isDark ? Colors.primary[300] : Colors.gray[500]} />}
             value={password}
             onChangeText={setPassword}
             isPassword
@@ -125,22 +128,22 @@ export default function SignupScreen() {
           <View style={styles.divider}>
             <View style={[
               styles.dividerLine,
-              { backgroundColor: isDark ? Colors.gray[700] : Colors.gray[300] }
+              { backgroundColor: isDark ? Colors.gray[900] : Colors.gray[300] }
             ]} />
             <Text style={[
               styles.dividerText,
-              { color: isDark ? Colors.gray[500] : Colors.gray[500] }
+              { color: isDark ? Colors.gray[400] : Colors.gray[500] }
             ]}>OR</Text>
             <View style={[
               styles.dividerLine,
-              { backgroundColor: isDark ? Colors.gray[700] : Colors.gray[300] }
+              { backgroundColor: isDark ? Colors.gray[900] : Colors.gray[300] }
             ]} />
           </View>
 
           <View style={styles.loginContainer}>
             <Text style={[
               styles.loginText,
-              { color: isDark ? Colors.gray[400] : Colors.gray[600] }
+              { color: isDark ? Colors.gray[200] : Colors.gray[600] }
             ]}>
               Already have an account?
             </Text>
@@ -169,9 +172,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   title: {
-    fontSize: typography.fontSizes.xxl,
+    fontSize: typography.fontSizes.xxxl,
     fontWeight: '600',
-    marginBottom: spacing.sm,
+    marginBottom: spacing.lg,
   },
   subtitle: {
     fontSize: typography.fontSizes.md,

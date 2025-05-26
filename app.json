@@ -5,6 +5,12 @@
       "expo-router"
     ],
     "name": "voquill",
-    "slug": "voquill"
+    "slug": "voquill",
+    "android": {
+      "package": "com.anonymous.voquill"
+    },
+    "ios": {
+      "bundleIdentifier": "com.rishikesh.voquill"
+    }
   }
 }
